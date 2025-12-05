@@ -5,7 +5,6 @@ WORKDIR /app
 
 # Copy frontend, install and build
 COPY frontend/package*.json frontend/
-COPY frontend/yarn.lock frontend/  
 WORKDIR /app/frontend
 RUN npm ci --silent
 COPY frontend/ .

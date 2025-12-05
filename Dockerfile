@@ -1,6 +1,6 @@
 # Multi-stage Dockerfile to build frontend and backend and serve both from Express
 # Builder stage
-FROM node:18-alpine AS builder
+FROM node:18-slim AS builder
 WORKDIR /app
 
 # Copy frontend, install and build
@@ -10,7 +10,7 @@ RUN npm ci --silent
 COPY frontend/ .
 RUN npm run build
 
-FROM node:18-alpine AS runtime
+FROM node:18-slim AS runtime
 WORKDIR /app
 
 # Copy backend dependencies and install

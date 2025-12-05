@@ -3,27 +3,31 @@
 FROM node:18-slim AS builder
 WORKDIR /app
 
-# Copy frontend, install and build
+# Build frontend
 COPY frontend/package*.json frontend/
 WORKDIR /app/frontend
-RUN npm ci --silent
+RUN npm ci
 COPY frontend/ .
 RUN npm run build
 
+# Install backend production dependencies in builder stage
+WORKDIR /app
+COPY backend/package*.json backend/
+WORKDIR /app/backend
+RUN npm ci --only=production
+COPY backend/ .
+
+# Final runtime image
 FROM node:18-slim AS runtime
 WORKDIR /app
 
-# Copy backend dependencies and install
-COPY backend/package*.json backend/
-WORKDIR /app/backend
-RUN npm ci --only=production --silent
+# Copy backend (with node_modules installed in builder)
+COPY --from=builder /app/backend /app/backend
 
-# Copy backend source
-COPY backend/ .
-
-# Copy frontend build into backend/public (we serve from backend/server.js using frontend/dist)
+# Copy frontend build into backend (served from backend/server.js)
 COPY --from=builder /app/frontend/dist /app/frontend/dist
 
+WORKDIR /app/backend
 ENV NODE_ENV=production
 ENV PORT=5000
 EXPOSE 5000

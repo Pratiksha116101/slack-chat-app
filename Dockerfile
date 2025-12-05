@@ -6,7 +6,7 @@ WORKDIR /app
 # Build frontend
 COPY frontend/package*.json frontend/
 WORKDIR /app/frontend
-RUN npm ci
+RUN npm install --no-audit --prefer-offline --no-fund
 COPY frontend/ .
 RUN npm run build
 
@@ -14,7 +14,7 @@ RUN npm run build
 WORKDIR /app
 COPY backend/package*.json backend/
 WORKDIR /app/backend
-RUN npm ci --only=production
+RUN npm install --only=production --no-audit --prefer-offline --no-fund
 COPY backend/ .
 
 # Final runtime image

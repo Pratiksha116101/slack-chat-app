@@ -12,10 +12,10 @@ RUN npm run build
 
 # Install backend production dependencies in builder stage
 WORKDIR /app
-COPY backend/package*.json backend/
+COPY backend/ /app/backend/
 WORKDIR /app/backend
+# Install production deps (package.json is present because we copied the backend)
 RUN npm install --only=production --no-audit --prefer-offline --no-fund
-COPY backend/ .
 
 # Final runtime image
 FROM node:18-slim AS runtime

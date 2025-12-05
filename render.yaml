@@ -1,0 +1,19 @@
+services:
+  - type: web
+    name: slack-chat-app
+    env: docker
+    dockerfilePath: Dockerfile
+    branch: main
+    plan: free
+    # Note: set the following environment variables in the Render dashboard or via `render.yaml` overrides
+    envVars:
+      - key: MONGODB_URI
+        value: "REPLACE_WITH_YOUR_MONGODB_URI"
+      - key: JWT_SECRET
+        value: "REPLACE_WITH_A_STRONG_SECRET"
+      - key: FRONTEND_URL
+        value: "https://your-app.onrender.com"
+    # Health check (Render will use this path to confirm the service is healthy)
+    healthCheckPath: /health
+    instanceCount: 1
+    # Use the Dockerfile in repo root; the Dockerfile builds frontend and serves via backend Express server
